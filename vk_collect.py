@@ -9,7 +9,7 @@ import sys
 from subprocess import PIPE, Popen
 
 def main():
-    login, password = open("vkpasswd").read().split(':')
+    login, password = open("vkpasswd").read().rstrip().split(':')
     vk_session = vk_api.VkApi(login, password)
     ftc = open('todaycount.txt')
     #vk_session = vk_api.VKApi(token=token)
@@ -198,28 +198,34 @@ def main():
             })
 
     with vk_api.VkRequestsPool(vk_session) as pool:
+      requests3=pool.method('newsfeed.search', {
+           'q':u'репост подакрки Новосибирск',
+            'count':'150'
+            })
+
+    with vk_api.VkRequestsPool(vk_session) as pool:
       requests2=pool.method('newsfeed.search', {
            'q':u'Конкурс репост подарки Россия',
             'count':'150'
             })
     #Репостим золотые группы
-    fgc = open('goldclub.txt')
-    for club in fgc:
-      time.sleep(1.2)
-      try:
-        readWall(int(club))
-      except:
-        print 'Не парсится группа '+str(club)
+    #fgc = open('goldclub.txt')
+    #for club in fgc:
+    #  time.sleep(1.2)
+    #  try:
+    #    readWall(int(club))
+    #  except:
+    #    print 'Не парсится группа '+str(club)
 
     checkResults(requests)
     checkResults(requests2)
-    #checkResults(requests3)
+    checkResults(requests3)
 
-    if (int(time.asctime().split(' ')[3].split(':')[0]) > 15): 
+    if (int(time.asctime().split(' ')[3].split(':')[0]) > 22) or (len(open("reposted.txt").read().split())-todaycount>149*askDayNum()): # stop reposting after 10 PM
       print 'На сегодня хватит'
-      while ((len(open("reposted.txt").read().split())-todaycount<149*askDayNum())) and (int(time.asctime().split(' ')[3].split(':')[0]) < 21):
-        time.sleep(120.0+random.random()*200.0)
-        makeRepostSteampunk()
+      #while ((len(open("reposted.txt").read().split())-todaycount<149*askDayNum())) and (int(time.asctime().split(' ')[3].split(':')[0]) < 21):
+      #  time.sleep(120.0+random.random()*200.0)
+      #  makeRepostSteampunk()
       sys.exit(0)
 
 if __name__ == '__main__':
