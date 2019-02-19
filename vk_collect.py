@@ -198,6 +198,12 @@ def main():
             })
 
     with vk_api.VkRequestsPool(vk_session) as pool:
+      requests3=pool.method('newsfeed.search', {
+           'q':u'репост подакрки Новосибирск',
+            'count':'150'
+            })
+
+    with vk_api.VkRequestsPool(vk_session) as pool:
       requests2=pool.method('newsfeed.search', {
            'q':u'Конкурс репост подарки Россия',
             'count':'150'
@@ -213,7 +219,7 @@ def main():
 
     checkResults(requests)
     checkResults(requests2)
-    #checkResults(requests3)
+    checkResults(requests3)
 
     if (int(time.asctime().split(' ')[3].split(':')[0]) > 22) or (len(open("reposted.txt").read().split())-todaycount>149*askDayNum()): # stop reposting after 10 PM
       print 'На сегодня хватит'
